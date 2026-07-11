@@ -59,3 +59,46 @@ function sendLead(form, kind){
   form.querySelector('input').value = '';
   return false;
 }
+
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+
+hamburgerBtn.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('open');
+  hamburgerBtn.classList.toggle('active', isOpen);
+  hamburgerBtn.setAttribute('aria-expanded', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : ''; // stop background scroll while open
+});
+
+// optional: close menu if someone clicks a link or presses Escape
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburgerBtn.classList.remove('active');
+    hamburgerBtn.setAttribute('aria-expanded', false);
+    document.body.style.overflow = '';
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+    mobileMenu.classList.remove('open');
+    hamburgerBtn.classList.remove('active');
+    hamburgerBtn.setAttribute('aria-expanded', false);
+    document.body.style.overflow = '';
+  }
+});
+
+// close menu when clicking outside the menu card and outside the hamburger button
+document.addEventListener('click', (e) => {
+  const isOpen = mobileMenu.classList.contains('open');
+  const clickedInsideMenu = mobileMenu.contains(e.target);
+  const clickedHamburger = hamburgerBtn.contains(e.target);
+
+  if (isOpen && !clickedInsideMenu && !clickedHamburger) {
+    mobileMenu.classList.remove('open');
+    hamburgerBtn.classList.remove('active');
+    hamburgerBtn.setAttribute('aria-expanded', false);
+    document.body.style.overflow = '';
+  }
+});
